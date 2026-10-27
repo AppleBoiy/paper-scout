@@ -1,3 +1,5 @@
+<img src="docs/logo.png" alt="" width="96" align="right">
+
 # Paper Scout
 
 Find real, citable research papers for any question — ranked, de-duplicated, mapped and ready to cite.
@@ -50,9 +52,9 @@ Three free, open-source agent skills that chain through one shared data format (
 
 | Step | Skill | What it does |
 |---|---|---|
-| 1 | [paper-scout](https://github.com/AppleBoiy/paper-scout) | Finds real papers, ranks them, draws a citation map, writes BibTeX |
-| 2 | [claim-conflict-finder](https://github.com/AppleBoiy/claim-conflict-finder) | Extracts findings as claims and shows where and why papers disagree |
-| 3 | [research-dossier](https://github.com/AppleBoiy/research-dossier) | Writes a visual, citation-checked literature review |
+| 1 | <img src="https://raw.githubusercontent.com/AppleBoiy/paper-scout/main/docs/logo.png" width="20" alt=""> [paper-scout](https://github.com/AppleBoiy/paper-scout) | Finds real papers, ranks them, draws a citation map, writes BibTeX |
+| 2 | <img src="https://raw.githubusercontent.com/AppleBoiy/claim-conflict-finder/main/docs/logo.png" width="20" alt=""> [claim-conflict-finder](https://github.com/AppleBoiy/claim-conflict-finder) | Extracts findings as claims and shows where and why papers disagree |
+| 3 | <img src="https://raw.githubusercontent.com/AppleBoiy/research-dossier/main/docs/logo.png" width="20" alt=""> [research-dossier](https://github.com/AppleBoiy/research-dossier) | Writes a visual, citation-checked literature review |
 
 Each skill also works on its own.
 
