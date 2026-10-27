@@ -56,7 +56,7 @@ Each skill also works on its own.
 git clone https://github.com/AppleBoiy/paper-scout.git ~/.claude/skills/paper-scout
 ```
 
-**Other SKILL.md agents** (Codex CLI, Cursor, Gemini CLI, …) — clone the repo into the agent's skills folder. The agent reads `SKILL.md`; the scripts need Python 3.9+ and nothing else.
+**Other SKILL.md agents** (Codex CLI, Cursor, Gemini CLI, …) — clone the repo into the agent's skills folder. The agent reads `SKILL.md`; the scripts need Python 3.10+ and nothing else.
 
 Then just ask, e.g. *"Find the key papers on graph neural networks for drug discovery from the last 8 years."*
 
