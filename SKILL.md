@@ -54,7 +54,7 @@ python3 $S stats    --out $OUT --top 30
 ```
 
 Options worth knowing:
-- `--sources openalex,s2,arxiv` — drop `arxiv` outside physics, maths, CS and quantitative biology; drop `s2` if it keeps returning 429 (rate limit).
+- `--sources openalex,s2,arxiv` — drop `arxiv` outside physics, maths, CS and quantitative biology. Semantic Scholar's keyless tier is shared and often returns 429; the script then skips it for the rest of the run and continues with the other sources. That is normal — mention it in the search notes, and suggest the user set a free `S2_API_KEY` for fuller coverage.
 - `--mailto you@example.com` or env `OPENALEX_MAILTO` puts you in OpenAlex's faster pool. Optional.
 - env `S2_API_KEY` raises Semantic Scholar's rate limit. Optional.
 - `snowball --keys key1 key2` seeds from specific papers (use the user's known papers here).

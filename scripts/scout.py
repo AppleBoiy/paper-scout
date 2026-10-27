@@ -105,11 +105,12 @@ def today() -> str:
     return _dt.date.today().isoformat()
 
 
-def http_json(url: str, headers: dict | None = None, retries: int = 4, raw: bool = False):
+def http_json(url: str, headers: dict | None = None, retries: int = 4, raw: bool = False,
+              first_delay: float = 2.0):
     h = {"User-Agent": f"research-suite-paper-scout/{VERSION}"}
     if headers:
         h.update(headers)
-    delay = 2.0
+    delay = first_delay
     for attempt in range(retries + 1):
         req = urllib.request.Request(url, headers=h)
         try:
@@ -118,7 +119,10 @@ def http_json(url: str, headers: dict | None = None, retries: int = 4, raw: bool
                 return body if raw else json.loads(body)
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 502, 503, 504) and attempt < retries:
-                wait = float(e.headers.get("Retry-After") or delay)
+                try:
+                    wait = min(30.0, float(e.headers.get("Retry-After") or delay))
+                except ValueError:
+                    wait = delay
                 log(f"  … {e.code} from {urllib.parse.urlsplit(url).netloc}, retrying in {wait:.0f}s")
                 time.sleep(wait)
                 delay *= 2
@@ -273,9 +277,13 @@ def search_s2(q: str, y0: int | None, y1: int | None, limit: int) -> list[dict]:
     if y0 or y1:
         params["year"] = f"{y0 or ''}-{y1 or ''}"
     headers = {}
-    if os.environ.get("S2_API_KEY"):
+    keyed = bool(os.environ.get("S2_API_KEY"))
+    if keyed:
         headers["x-api-key"] = os.environ["S2_API_KEY"]
-    data = http_json(f"{S2}/paper/search?{urllib.parse.urlencode(params)}", headers=headers)
+    # the keyless tier is one rate limit shared by every anonymous user: retry once, briefly
+    data = http_json(f"{S2}/paper/search?{urllib.parse.urlencode(params)}", headers=headers,
+                     retries=3 if keyed else 1, first_delay=1.0 if keyed else 3.0)
+    time.sleep(1.1)  # stay under ~1 request/second
     return [parse_s2(p) for p in (data.get("data") or [])][:limit]
 
 
@@ -403,8 +411,13 @@ def cmd_search(a) -> None:
     st.data["search_terms"] = sorted(set(st.data.get("search_terms", [])) | set(terms))
     sources = [s.strip() for s in a.sources.split(",")]
     log_rows = st.data.setdefault("search_log", [])
+    skipped: set[str] = set()
     for term in terms:
         for src in sources:
+            if src in skipped:
+                log_rows.append({"term": term, "source": src, "found": 0, "new": 0,
+                                 "error": "skipped after rate limit", "date": today()})
+                continue
             try:
                 if src == "openalex":
                     rows = search_openalex(term, a.year_from, a.year_to, a.limit, a.mailto)
@@ -417,6 +430,11 @@ def cmd_search(a) -> None:
                     continue
             except Exception as e:  # keep going with other sources
                 log(f"  ! {src} failed for '{term}': {e}")
+                if isinstance(e, urllib.error.HTTPError) and e.code == 429:
+                    skipped.add(src)
+                    hint = (" Set S2_API_KEY (free: semanticscholar.org/product/api) for reliable access."
+                            if src in ("s2", "semanticscholar") and not os.environ.get("S2_API_KEY") else "")
+                    log(f"  ! {src} is rate-limiting; skipping it for the rest of this run.{hint}")
                 log_rows.append({"term": term, "source": src, "found": 0, "new": 0, "error": str(e)[:200], "date": today()})
                 continue
             new = sum(1 for r in rows if st.add(r)[1])

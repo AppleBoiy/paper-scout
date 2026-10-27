@@ -10,13 +10,12 @@ INCLUDE = ["SKILL.md", "LICENSE", "references"]
 
 
 def main() -> None:
-    shutil.rmtree(DIST, ignore_errors=True)
-    out = DIST / NAME
-    (out / "scripts").mkdir(parents=True)
+    out = DIST / NAME  # files are overwritten in place, so no delete is needed
+    (out / "scripts").mkdir(parents=True, exist_ok=True)
     for item in INCLUDE:
         src = ROOT / item
         if src.is_dir():
-            shutil.copytree(src, out / item)
+            shutil.copytree(src, out / item, dirs_exist_ok=True)
         elif src.exists():
             shutil.copy(src, out / item)
     templates = {p.name: p.read_text("utf-8") for p in sorted((ROOT / "assets").glob("*.html"))}

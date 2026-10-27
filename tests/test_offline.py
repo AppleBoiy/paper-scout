@@ -38,7 +38,7 @@ ATOM = """<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:a
 <author><name>Cy Arxiv</name></author><category term="cs.LG"/></entry></feed>"""
 
 
-def fake(url, headers=None, retries=4, raw=False):
+def fake(url, headers=None, retries=4, raw=False, first_delay=2.0):
     u = urllib.parse.urlsplit(url)
     q = dict(urllib.parse.parse_qsl(u.query))
     if "arxiv" in u.netloc:
@@ -104,6 +104,26 @@ class ScoutTest(unittest.TestCase):
         b = st.add({"title": "Unicode title about graphs again", "authors": ["Jose Nunez"], "year": 2020})[0]
         self.assertEqual(a["key"], "nunez2020unicode")
         self.assertEqual(b["key"], "nunez2020unicodea")
+
+    def test_rate_limited_source_is_skipped(self):
+        import urllib.error
+        calls = []
+        real = scout.http_json
+
+        def limited(url, headers=None, retries=4, raw=False, first_delay=2.0):
+            if "semanticscholar" in url:
+                calls.append(url)
+                raise urllib.error.HTTPError(url, 429, "Too Many Requests", {}, None)
+            return fake(url, headers, retries, raw)
+
+        scout.http_json = limited
+        try:
+            self.run_cli("search", "--query", "graph learning", "--terms", "graph learning", "graph models",
+                         "--sources", "openalex,s2", "--limit", "5")
+        finally:
+            scout.http_json = real
+        self.assertEqual(len(calls), 1, "after one 429 the source must be skipped for later terms")
+        self.assertTrue(self.papers(), "other sources still return papers")
 
     def test_abstract_reconstruction(self):
         self.assertEqual(scout.openalex_abstract({"b": [1], "a": [0], "c": [2]}), "a b c")
