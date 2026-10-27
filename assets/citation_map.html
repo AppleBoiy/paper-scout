@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ · Citation map</title>
+<style>
+:root{
+  --bg:#f7f4ee; --panel:#fffdf8; --ink:#1d1b18; --muted:#6b655c; --line:#d9d2c5; --edge:#9b9286;
+  --accent:#8a3b12; --chip:#efe9dd; --hl:#c2410c;
+  --c0:#2f6f8f; --c1:#b5562b; --c2:#5b7f3a; --c3:#7a4f9a; --c4:#b08a1e; --c5:#1f8a7a; --c6:#a33b5c; --c7:#55657a; --cx:#a8a196;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+  --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15140f; --panel:#1d1b16; --ink:#ece6da; --muted:#a59e91; --line:#3a362e; --edge:#6f685d;
+    --accent:#f0a46d; --chip:#2a2720; --hl:#fb923c;
+    --c0:#6fb3d6; --c1:#e88a5c; --c2:#9cc56f; --c3:#b893de; --c4:#e2c05a; --c5:#5fcbb8; --c6:#e17ea0; --c7:#9aaac0; --cx:#6c665b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15140f; --panel:#1d1b16; --ink:#ece6da; --muted:#a59e91; --line:#3a362e; --edge:#6f685d;
+  --accent:#f0a46d; --chip:#2a2720; --hl:#fb923c;
+  --c0:#6fb3d6; --c1:#e88a5c; --c2:#9cc56f; --c3:#b893de; --c4:#e2c05a; --c5:#5fcbb8; --c6:#e17ea0; --c7:#9aaac0; --cx:#6c665b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px}
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+.brand{flex:1 1 320px;min-width:0}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:600 22px/1.2 var(--serif);margin:6px 0 4px;overflow-wrap:anywhere}
+.meta{color:var(--muted);font-size:12.5px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input[type=search]{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:200px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:12.5px;padding:7px 10px;border:0;background:var(--panel);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.iconbtn{font:inherit;font-size:12.5px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);cursor:pointer}
+main{display:grid;grid-template-columns:1fr 380px;height:calc(100% - 92px);min-height:420px}
+#stage{position:relative;overflow:hidden;touch-action:none}
+svg{width:100%;height:100%;display:block;cursor:grab}
+svg.panning{cursor:grabbing}
+.edge{stroke:var(--edge);stroke-opacity:.35;stroke-width:.8;fill:none}
+.edge.on{stroke:var(--hl);stroke-opacity:.95;stroke-width:1.6}
+.edge.dim{stroke-opacity:.06}
+.node circle{stroke:var(--panel);stroke-width:1.4;cursor:pointer}
+.node.pre circle{stroke:var(--ink);stroke-dasharray:2 2}
+.node.cand circle{opacity:.55}
+.node.dim{opacity:.12}
+.node.sel circle{stroke:var(--hl);stroke-width:3}
+.node.match circle{stroke:var(--hl);stroke-width:2.5}
+.lbl{font-family:var(--sans);fill:var(--ink);paint-order:stroke;stroke:var(--bg);pointer-events:none}
+.axis text{font-family:var(--mono);fill:var(--muted)}
+.axis line{stroke:var(--line)}
+aside{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:18px 20px 28px}
+aside h2{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+aside h2:first-child{margin-top:0}
+.ptitle{font:600 18px/1.3 var(--serif);margin:0 0 8px}
+.authors{color:var(--muted);font-size:13px;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{background:var(--chip);border-radius:999px;padding:3px 9px;font-size:12px;color:var(--ink)}
+.chip.warn{background:transparent;border:1px dashed var(--accent);color:var(--accent)}
+.links a{color:var(--accent);margin-right:12px;font-size:13px}
+.abs{font:14.5px/1.55 var(--serif);color:var(--ink);margin-top:12px}
+ul.plist{list-style:none;margin:0;padding:0}
+ul.plist li{padding:7px 0;border-top:1px solid var(--line);cursor:pointer;display:flex;gap:10px;align-items:baseline}
+ul.plist li:hover .t{color:var(--accent)}
+ul.plist .y{font:11px var(--mono);color:var(--muted);flex:0 0 34px}
+ul.plist .t{font-size:13px;line-height:1.35}
+.legend{display:flex;flex-direction:column;gap:6px}
+.legend button{all:unset;display:flex;gap:8px;align-items:center;cursor:pointer;font-size:13px;padding:2px 0}
+.legend button[aria-pressed=false]{opacity:.35}
+.sw{width:11px;height:11px;border-radius:50%;flex:0 0 11px}
+.legend .n{margin-left:auto;font:11px var(--mono);color:var(--muted)}
+.hint{color:var(--muted);font-size:12px;line-height:1.5}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;max-width:280px;box-shadow:0 4px 18px rgba(0,0,0,.12);display:none}
+@media (max-width: 860px){
+  main{grid-template-columns:1fr;grid-template-rows:62vh auto;height:auto}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  input[type=search]{width:100%}
+  .controls{width:100%}
+  header{padding:14px 16px 10px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="eyebrow">Citation map · paper-scout</div>
+    <h1 id="title">__TITLE__</h1>
+    <div class="meta" id="meta"></div>
+  </div>
+  <div class="controls">
+    <input type="search" id="q" placeholder="Filter by title, author, venue…" aria-label="Filter papers">
+    <div class="seg" role="group" aria-label="Layout">
+      <button id="vNet" aria-pressed="true">Network</button>
+      <button id="vTime" aria-pressed="false">Timeline</button>
+    </div>
+    <div class="seg" role="group" aria-label="Node size">
+      <button id="sCite" aria-pressed="true">Size: citations</button>
+      <button id="sScore" aria-pressed="false">relevance</button>
+    </div>
+    <button class="iconbtn" id="fit" title="Fit to view">Fit</button>
+    <button class="iconbtn" id="theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+<main>
+  <div id="stage">
+    <svg id="svg" role="img" aria-label="Citation network">
+      <defs><marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L8,4L0,8z" fill="var(--edge)"/></marker></defs>
+      <g id="vp"><g class="axis" id="axis"></g><g id="E"></g><g id="N"></g><g id="L"></g></g>
+    </svg>
+    <div class="tip" id="tip"></div>
+  </div>
+  <aside id="side"></aside>
+</main>
+<script>
+const DATA = /*__DATA__*/null;
+(function(){
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nodes = DATA.nodes.map(d => Object.assign({}, d));
+const byKey = Object.fromEntries(nodes.map(n => [n.key, n]));
+const edges = DATA.edges.filter(e => byKey[e.s] && byKey[e.t]).map(e => ({s: byKey[e.s], t: byKey[e.t]}));
+const out = {}, inc = {};
+nodes.forEach(n => { out[n.key] = []; inc[n.key] = []; });
+edges.forEach(e => { out[e.s.key].push(e.t); inc[e.t.key].push(e.s); });
+const years = nodes.map(n => n.year).filter(Boolean);
+const y0 = Math.min(...years), y1 = Math.max(...years);
+const maxC = Math.max(1, ...nodes.map(n => n.cited_by));
+const maxS = Math.max(0.01, ...nodes.map(n => n.score));
+const hidden = new Set();
+let sizeBy = "cite", mode = "net", sel = null, query = "";
+
+$("#meta").textContent = `${nodes.length} papers · ${edges.length} citation links · ${DATA.clusters.length} clusters · ${y0||"?"}–${y1||"?"} · generated ${DATA.generated}`;
+document.title = DATA.title + " · Citation map";
+
+const color = c => c >= 0 ? `var(--c${c % 8})` : "var(--cx)";
+const radius = n => sizeBy === "cite" ? 4 + 15 * Math.sqrt(n.cited_by / maxC) : 4 + 15 * Math.pow(n.score / maxS, 1.5);
+const short = n => { const a = (n.authors[0] || "Anon").split(" ").pop(); return `${a}${n.n_authors > 1 ? " et al." : ""} ${n.year || ""}`; };
+
+// ---------- layout
+const stage = $("#stage"), svg = $("#svg");
+let W = stage.clientWidth, H = stage.clientHeight;
+const nC = Math.max(1, DATA.clusters.length);
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const anchor = c => { if (c < 0) return {x: 0, y: 0}; const a = 2 * Math.PI * c / nC; const r = nC > 1 ? 220 : 0; return {x: r * Math.cos(a), y: r * Math.sin(a)}; };
+nodes.forEach(n => { const a = anchor(n.cluster); n.x = a.x + (rnd() - .5) * 160; n.y = a.y + (rnd() - .5) * 160; n.vx = 0; n.vy = 0; });
+const yearX = y => y1 > y0 ? -480 + 960 * (y - y0) / (y1 - y0) : 0;
+const lane = c => (c < 0 ? nC : c) * 150 - nC * 75;
+
+let alpha = 1;
+function tick(){
+  const k = alpha;
+  for (let i = 0; i < nodes.length; i++){
+    const a = nodes[i];
+    for (let j = i + 1; j < nodes.length; j++){
+      const b = nodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y, d2 = dx*dx + dy*dy + 0.01;
+      if (d2 > 160000) continue;
+      const f = 900 / d2 * k, d = Math.sqrt(d2);
+      dx /= d; dy /= d; a.vx -= dx*f; a.vy -= dy*f; b.vx += dx*f; b.vy += dy*f;
+      const min = radius(a) + radius(b) + 3;
+      if (d < min){ const p = (min - d) / 2; a.x -= dx*p; a.y -= dy*p; b.x += dx*p; b.y += dy*p; }
+    }
+  }
+  for (const e of edges){
+    const dx = e.t.x - e.s.x, dy = e.t.y - e.s.y, d = Math.sqrt(dx*dx + dy*dy) || 1;
+    const f = (d - 70) * 0.02 * k;
+    if (mode === "time"){ /* lanes only: links do not pull rows together */ }
+    else { e.s.vx += dx/d*f; e.s.vy += dy/d*f; e.t.vx -= dx/d*f; e.t.vy -= dy/d*f; }
+  }
+  for (const n of nodes){
+    if (mode === "time"){
+      n.vx += ((n.year ? yearX(n.year) : -560) - n.x) * 0.2 * k;
+      n.vy += (lane(n.cluster) - n.y) * 0.035 * k;
+    } else {
+      const a = anchor(n.cluster);
+      n.vx += (a.x - n.x) * 0.012 * k; n.vy += (a.y - n.y) * 0.012 * k;
+      n.vx -= n.x * 0.002 * k; n.vy -= n.y * 0.002 * k;
+    }
+    if (n.fixed) { n.vx = n.vy = 0; continue; }
+    n.vx *= 0.6; n.vy *= 0.6; n.x += n.vx; n.y += n.vy;
+  }
+  alpha *= 0.985;
+}
+
+// ---------- render
+const gE = $("#E"), gN = $("#N"), gL = $("#L"), gA = $("#axis"), vp = $("#vp");
+const eEls = edges.map(e => { const l = document.createElementNS(NS, "line"); l.setAttribute("class", "edge"); l.setAttribute("marker-end", "url(#arr)"); gE.appendChild(l); return l; });
+const nEls = nodes.map(n => {
+  const g = document.createElementNS(NS, "g");
+  g.setAttribute("class", "node" + (n.preprint ? " pre" : "") + (n.status === "candidate" ? " cand" : ""));
+  const c = document.createElementNS(NS, "circle"); c.setAttribute("fill", color(n.cluster));
+  g.appendChild(c); gN.appendChild(g);
+  g.addEventListener("click", ev => { ev.stopPropagation(); select(n); });
+  g.addEventListener("pointerenter", ev => showTip(n, ev));
+  g.addEventListener("pointerleave", () => { $("#tip").style.display = "none"; if (!sel) highlight(null); });
+  g.addEventListener("pointerdown", ev => startDrag(ev, n));
+  return g;
+});
+const labelled = new Set([...nodes].sort((a, b) => b.score - a.score).slice(0, 8).map(n => n.key));
+const lEls = nodes.map(n => { const t = document.createElementNS(NS, "text"); t.setAttribute("class", "lbl"); t.textContent = short(n); gL.appendChild(t); return t; });
+
+function draw(){
+  edges.forEach((e, i) => {
+    const dx = e.t.x - e.s.x, dy = e.t.y - e.s.y, d = Math.sqrt(dx*dx + dy*dy) || 1, r = radius(e.t) + 2;
+    const l = eEls[i]; l.setAttribute("x1", e.s.x); l.setAttribute("y1", e.s.y);
+    l.setAttribute("x2", e.t.x - dx/d*r); l.setAttribute("y2", e.t.y - dy/d*r);
+    l.style.display = (hidden.has(e.s.cluster) || hidden.has(e.t.cluster)) ? "none" : "";
+  });
+  nodes.forEach((n, i) => {
+    const g = nEls[i]; g.firstChild.setAttribute("r", radius(n));
+    g.setAttribute("transform", `translate(${n.x},${n.y})`);
+    g.style.display = hidden.has(n.cluster) ? "none" : "";
+    const t = lEls[i]; t.setAttribute("x", n.x + radius(n) + 3); t.setAttribute("y", n.y + 4);
+    t.style.display = (!hidden.has(n.cluster) && (labelled.has(n.key) || (sel && (sel === n)))) ? "" : "none";
+  });
+}
+function drawAxis(top, bottom){
+  gA.innerHTML = "";
+  if (mode !== "time" || !(y1 > y0)) return;
+  const step = Math.max(1, Math.ceil((y1 - y0) / 12));
+  for (let y = y0; y <= y1; y += step){
+    const x = yearX(y);
+    const l = document.createElementNS(NS, "line"); l.setAttribute("x1", x); l.setAttribute("x2", x); l.setAttribute("y1", top + 6); l.setAttribute("y2", bottom); gA.appendChild(l);
+    const t = document.createElementNS(NS, "text"); t.setAttribute("x", x); t.setAttribute("y", top); t.setAttribute("text-anchor", "middle"); t.textContent = y; gA.appendChild(t);
+  }
+}
+let raf = 0;
+function run(n = 320){ alpha = 1; cancelAnimationFrame(raf); let i = 0;
+  const step = () => { for (let s = 0; s < 3 && i < n; s++, i++) tick(); draw(); if (i < n) raf = requestAnimationFrame(step); else fit(); };
+  step();
+}
+
+// ---------- zoom / pan
+let T = {x: W/2, y: H/2, k: 1};
+const apply = () => {
+  vp.setAttribute("transform", `translate(${T.x},${T.y}) scale(${T.k})`);
+  // keep text and strokes a constant on-screen size at any zoom
+  gL.style.fontSize = (11.5 / T.k) + "px"; gL.style.strokeWidth = (3 / T.k) + "px";
+  gA.style.fontSize = (10.5 / T.k) + "px";
+};
+function fit(){
+  const vis = nodes.filter(n => !hidden.has(n.cluster)); if (!vis.length) return;
+  W = stage.clientWidth; H = stage.clientHeight;
+  let x0 = Infinity, x1 = -Infinity, ya = Infinity, yb = -Infinity;
+  vis.forEach(n => { x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x); ya = Math.min(ya, n.y); yb = Math.max(yb, n.y); });
+  if (mode === "time"){ ya -= 40; yb += 20; drawAxis(ya, yb); }
+  x1 += 90; // room for labels
+  const k = Math.min(1.6, 0.9 * Math.min(W / (x1 - x0 + 120), H / (yb - ya + 80)));
+  T = {k, x: W/2 - k * (x0 + x1)/2, y: H/2 - k * (ya + yb)/2}; apply();
+}
+svg.addEventListener("wheel", ev => { ev.preventDefault();
+  const r = svg.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  const f = Math.exp(-ev.deltaY * 0.0015), k = Math.max(0.15, Math.min(6, T.k * f));
+  T.x = mx - (mx - T.x) * k / T.k; T.y = my - (my - T.y) * k / T.k; T.k = k; apply(); }, {passive: false});
+let pan = null, drag = null;
+svg.addEventListener("pointerdown", ev => { if (drag) return; pan = {x: ev.clientX, y: ev.clientY, tx: T.x, ty: T.y, moved: false}; svg.classList.add("panning"); });
+window.addEventListener("pointermove", ev => {
+  if (drag){ const r = svg.getBoundingClientRect(); drag.n.x = (ev.clientX - r.left - T.x) / T.k; drag.n.y = (ev.clientY - r.top - T.y) / T.k; drag.moved = true; draw(); return; }
+  if (pan){ T.x = pan.tx + ev.clientX - pan.x; T.y = pan.ty + ev.clientY - pan.y; if (Math.abs(ev.clientX - pan.x) + Math.abs(ev.clientY - pan.y) > 3) pan.moved = true; apply(); }
+});
+window.addEventListener("pointerup", () => { if (drag){ drag.n.fixed = false; drag = null; } if (pan){ svg.classList.remove("panning"); if (!pan.moved) { select(null); } pan = null; } });
+function startDrag(ev, n){ ev.stopPropagation(); drag = {n, moved: false}; n.fixed = true; }
+
+// ---------- interaction
+function highlight(n){
+  const nb = n ? new Set([n.key, ...out[n.key].map(x => x.key), ...inc[n.key].map(x => x.key)]) : null;
+  nodes.forEach((m, i) => { nEls[i].classList.toggle("dim", !!nb && !nb.has(m.key)); nEls[i].classList.toggle("sel", m === n); });
+  edges.forEach((e, i) => { const on = !!n && (e.s === n || e.t === n); eEls[i].classList.toggle("on", on); eEls[i].classList.toggle("dim", !!n && !on); });
+}
+function showTip(n, ev){
+  if (!sel) highlight(n);
+  const r = stage.getBoundingClientRect(), tip = $("#tip");
+  tip.innerHTML = `<b>${esc(n.title)}</b><br><span style="color:var(--muted)">${esc(short(n))} · ${n.cited_by} citations</span>`;
+  tip.style.left = Math.min(ev.clientX - r.left + 14, r.width - 290) + "px"; tip.style.top = (ev.clientY - r.top + 14) + "px"; tip.style.display = "block";
+}
+function plist(arr){
+  if (!arr.length) return `<p class="hint">None in this set.</p>`;
+  return `<ul class="plist">${arr.sort((a, b) => (b.year||0) - (a.year||0)).map(p => `<li data-k="${esc(p.key)}"><span class="y">${p.year || "—"}</span><span class="t">${esc(p.title)}</span></li>`).join("")}</ul>`;
+}
+function select(n){
+  sel = n; highlight(n); draw();
+  const side = $("#side");
+  if (!n){ side.innerHTML = overview(); bind(); return; }
+  const cl = DATA.clusters.find(c => c.id === n.cluster);
+  const authors = n.authors.join(", ") + (n.n_authors > n.authors.length ? ` + ${n.n_authors - n.authors.length} more` : "");
+  side.innerHTML = `
+    <h2>Paper</h2>
+    <div class="ptitle">${esc(n.title)}</div>
+    <div class="authors">${esc(authors)}</div>
+    <div class="authors"><i>${esc(n.venue || "Venue unknown")}</i>${n.year ? " · " + n.year : ""}</div>
+    <div class="chips">
+      <span class="chip">${n.cited_by} citations</span>
+      <span class="chip">relevance ${(n.score * 100).toFixed(0)}</span>
+      ${cl ? `<span class="chip"><span class="sw" style="display:inline-block;width:8px;height:8px;background:${color(n.cluster)};margin-right:5px"></span>${esc(cl.name)}</span>` : ""}
+      ${n.preprint ? `<span class="chip warn">⚠ preprint · not peer-reviewed</span>` : ""}
+      <span class="chip" style="font-family:var(--mono)">@${esc(n.key)}</span>
+    </div>
+    <div class="links">${n.doi ? `<a href="https://doi.org/${esc(n.doi)}" target="_blank" rel="noopener">DOI ↗</a>` : (n.url ? `<a href="${esc(n.url)}" target="_blank" rel="noopener">Record ↗</a>` : "")}${n.oa_url ? `<a href="${esc(n.oa_url)}" target="_blank" rel="noopener">Free full text ↗</a>` : ""}</div>
+    ${n.abstract ? `<div class="abs">${esc(n.abstract)}${n.abstract.length >= 1200 ? "…" : ""}</div>` : `<p class="hint">No abstract available from the APIs.</p>`}
+    <h2>Cites (in this set) · ${out[n.key].length}</h2>${plist([...out[n.key]])}
+    <h2>Cited by (in this set) · ${inc[n.key].length}</h2>${plist([...inc[n.key]])}
+    <p class="hint" style="margin-top:18px"><a href="#" id="back" style="color:var(--accent)">← Back to overview</a></p>`;
+  bind();
+}
+function overview(){
+  const top = [...nodes].sort((a, b) => b.score - a.score).slice(0, 12);
+  const unl = nodes.filter(n => n.cluster < 0).length;
+  return `
+    <h2>Clusters</h2>
+    <div class="legend">${DATA.clusters.map(c => `<button data-c="${c.id}" aria-pressed="${!hidden.has(c.id)}"><span class="sw" style="background:${color(c.id)}"></span>${esc(c.name)}<span class="n">${c.size}</span></button>`).join("")}
+    ${unl ? `<button data-c="-1" aria-pressed="${!hidden.has(-1)}"><span class="sw" style="background:var(--cx)"></span>Not linked to others<span class="n">${unl}</span></button>` : ""}</div>
+    <p class="hint">Clusters are groups of papers that cite each other. Click a cluster to hide or show it.</p>
+    <h2>Start reading here</h2>${plist(top)}
+    <h2>How to read this map</h2>
+    <p class="hint">Each dot is a paper; an arrow points from a paper to one it cites. Bigger dots have more citations (or higher relevance — toggle above). Dashed outlines are preprints. Faded dots are candidates that did not make the reading list. <b>Timeline</b> spreads papers by year so you can see which ideas came first.</p>
+    ${DATA.query ? `<h2>Research question</h2><p class="abs" style="margin-top:0">${esc(DATA.query)}</p>` : ""}`;
+}
+function bind(){
+  document.querySelectorAll("#side li[data-k]").forEach(li => li.onclick = () => select(byKey[li.dataset.k]));
+  document.querySelectorAll("#side .legend button").forEach(b => b.onclick = () => {
+    const c = +b.dataset.c; hidden.has(c) ? hidden.delete(c) : hidden.add(c); b.setAttribute("aria-pressed", !hidden.has(c)); draw(); });
+  const back = $("#back"); if (back) back.onclick = e => { e.preventDefault(); select(null); };
+}
+$("#q").addEventListener("input", e => {
+  query = e.target.value.trim().toLowerCase();
+  nodes.forEach((n, i) => {
+    const hit = query && (n.title + " " + n.authors.join(" ") + " " + n.venue + " " + n.key).toLowerCase().includes(query);
+    nEls[i].classList.toggle("match", !!hit); nEls[i].classList.toggle("dim", !!query && !hit);
+    lEls[i].style.display = hit ? "" : (labelled.has(n.key) && !query ? "" : "none");
+  });
+});
+const setMode = m => { mode = m; $("#vNet").setAttribute("aria-pressed", m === "net"); $("#vTime").setAttribute("aria-pressed", m === "time"); gA.innerHTML = ""; run(260); };
+$("#vNet").onclick = () => setMode("net"); $("#vTime").onclick = () => setMode("time");
+const setSize = s => { sizeBy = s; $("#sCite").setAttribute("aria-pressed", s === "cite"); $("#sScore").setAttribute("aria-pressed", s === "score"); draw(); };
+$("#sCite").onclick = () => setSize("cite"); $("#sScore").onclick = () => setSize("score");
+$("#fit").onclick = fit;
+$("#theme").onclick = () => { const r = document.documentElement; const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const cur = r.dataset.theme || (dark ? "dark" : "light"); r.dataset.theme = cur === "dark" ? "light" : "dark"; };
+window.addEventListener("resize", () => { W = stage.clientWidth; H = stage.clientHeight; fit(); });
+apply(); select(null); run();
+})();
+</script>
+</body>
+</html>
