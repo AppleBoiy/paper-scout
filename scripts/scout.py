@@ -4,7 +4,7 @@
 Standard library only. Talks to three free scholarly APIs:
   - OpenAlex          https://api.openalex.org
   - Semantic Scholar  https://api.semanticscholar.org
-  - arXiv             http://export.arxiv.org
+  - arXiv             https://export.arxiv.org
 
 Subcommands (run `scout.py <cmd> -h` for options):
   search    query the APIs and merge results into papers.json
@@ -39,7 +39,7 @@ from pathlib import Path
 VERSION = "1.0.0"
 OPENALEX = "https://api.openalex.org"
 S2 = "https://api.semanticscholar.org/graph/v1"
-ARXIV = "http://export.arxiv.org/api/query"
+ARXIV = "https://export.arxiv.org/api/query"
 
 STOP = set("""a an the of for and or in on at to from by with without into onto over under via using use
 based towards toward new novel study studies analysis approach approaches method methods model models

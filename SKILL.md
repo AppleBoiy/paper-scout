@@ -15,6 +15,12 @@ Part of the Research Suite: `paper-scout` → `claim-conflict-finder` → `resea
 2. Mark preprints as **not peer-reviewed** every time you mention them.
 3. Report coverage honestly: which sources answered, which failed, the year window, and what the search could have missed.
 
+## Network and data access (disclosed)
+
+- **Hosts contacted, read-only HTTPS GET requests only:** `api.openalex.org`, `api.semanticscholar.org`, `export.arxiv.org`. Nothing else is contacted, and no data about the user or their files is sent — only the search strings and paper IDs.
+- **Environment variables read (both optional):** `S2_API_KEY` is sent only to `api.semanticscholar.org` as its documented `x-api-key` header; `OPENALEX_MAILTO` is sent only to `api.openalex.org` as its documented `mailto` parameter. Neither is stored or logged.
+- **Files written:** only inside the `--out` project folder (`papers.json`, `references.bib`, `citation_map.html`). The generated HTML makes no network requests.
+
 ## 1. Clarify the question (one short exchange at most)
 
 Collect what you can from the request; ask only for what is missing and matters:
