@@ -148,7 +148,8 @@ let W = stage.clientWidth, H = stage.clientHeight;
 const nC = Math.max(1, DATA.clusters.length);
 let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const anchor = c => { if (c < 0) return {x: 0, y: 0}; const a = 2 * Math.PI * c / nC; const r = nC > 1 ? 220 : 0; return {x: r * Math.cos(a), y: r * Math.sin(a)}; };
-nodes.forEach(n => { const a = anchor(n.cluster); n.x = a.x + (rnd() - .5) * 160; n.y = a.y + (rnd() - .5) * 160; n.vx = 0; n.vy = 0; });
+const spread = 160 + 6 * Math.sqrt(nodes.length) * 10;
+nodes.forEach(n => { const a = anchor(n.cluster); n.x = a.x + (rnd() - .5) * spread; n.y = a.y + (rnd() - .5) * spread; n.vx = 0; n.vy = 0; });
 const yearX = y => y1 > y0 ? -480 + 960 * (y - y0) / (y1 - y0) : 0;
 const lane = c => (c < 0 ? nC : c) * 150 - nC * 75;
 
@@ -161,7 +162,7 @@ function tick(){
       const b = nodes[j];
       let dx = b.x - a.x, dy = b.y - a.y, d2 = dx*dx + dy*dy + 0.01;
       if (d2 > 160000) continue;
-      const f = 900 / d2 * k, d = Math.sqrt(d2);
+      const f = Math.min(900 / d2, 40) * k, d = Math.sqrt(d2);  // capped: near-coincident nodes must not explode
       dx /= d; dy /= d; a.vx -= dx*f; a.vy -= dy*f; b.vx += dx*f; b.vy += dy*f;
       const min = radius(a) + radius(b) + 3;
       if (d < min){ const p = (min - d) / 2; a.x -= dx*p; a.y -= dy*p; b.x += dx*p; b.y += dy*p; }
@@ -183,7 +184,9 @@ function tick(){
       n.vx -= n.x * 0.002 * k; n.vy -= n.y * 0.002 * k;
     }
     if (n.fixed) { n.vx = n.vy = 0; continue; }
-    n.vx *= 0.6; n.vy *= 0.6; n.x += n.vx; n.y += n.vy;
+    n.vx *= 0.6; n.vy *= 0.6;
+    const sp = Math.hypot(n.vx, n.vy); if (sp > 30){ n.vx *= 30 / sp; n.vy *= 30 / sp; }
+    n.x += n.vx; n.y += n.vy;
   }
   alpha *= 0.985;
 }

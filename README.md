@@ -4,6 +4,16 @@ Find real, citable research papers for any question — ranked, de-duplicated, m
 
 A free, open-source [agent skill](https://www.agensi.io/learn/skill-md-format) (SKILL.md) for students and researchers. Works with Claude Code, Codex CLI, Cursor, Gemini CLI and any agent that supports the SKILL.md standard.
 
+## Screenshots
+
+| Network view: research clusters and who cites whom | Timeline view (dark): how the ideas developed |
+|---|---|
+| ![Citation map, network view](docs/screenshots/network.png) | ![Citation map, timeline view in dark mode](docs/screenshots/timeline-dark.png) |
+| **Paper panel:** abstract, links, in-set citations | **Mobile** |
+| ![Paper detail panel](docs/screenshots/paper-detail.png) | <img src="docs/screenshots/mobile.png" alt="Mobile view" width="260"> |
+
+*Real output, not a mock-up:* a run on the question **“How are galaxy merger histories reconstructed from stellar data?”** (OpenAlex + arXiv, 114 papers). The files are in [`examples/milky-way-mergers/`](examples/milky-way-mergers/) — download `citation_map.html` and open it in a browser.
+
 ## What it does
 
 - Searches **OpenAlex**, **Semantic Scholar** and **arXiv** (free APIs, no keys required) with several search strings.
